@@ -32,11 +32,11 @@ touch <your config_file_name>
 4. Write into the config file you just created
 Follow the [sites_available_example](https://github.com/PeterTsungYu/reverse_proxy/blob/main/sites_available_example.txt).
 There are some variable that you should fill in.
-- <your sub.domain.name here>. It is the domain name you would like to use. Ex. service.goggle.comt.
+- `<your sub.domain.name here>`. It is the domain name you would like to use. Ex. service.goggle.comt.
 > No need to prefix with either http or https. Those are part of the configuration.
-- <your page or leave empty as a root page>. It is the name of your service page or your route, which will appear at the end of your url. After setting up, it will be a complete URL as service.goggle.comt/<your page>.
+- `<your page or leave empty as a root page>`. It is the name of your service page or your route, which will appear at the end of your url. After setting up, it will be a complete URL as service.goggle.comt/`<your route>`.
 > Leave it empty if it is gonna be a root webpage.
-- <your designated port number>. It is the port you would like to forward from the server side. It could be one of the available ports on the server side. Ex. 3322, 5333.
+- `<your designated port number>`. It is the port you would like to forward from the server side. It could be one of the available ports on the server side. Ex. 3322, 5333.
 
 5. After editing the route file, execute
 ```
@@ -47,10 +47,17 @@ sudo systemctl restart nginx
 
 # check status
 sudo systemctl status nginx 
+
+# restart gracefully
+sudo systemctl reload nginx
+
+# stop the service 
+sudo systemctl stop nginx
 ```
 
 6. (Optional) Make your service SSL-certified. And, it is for free!
-# Let's encrypt for https SSL
+```
+ # Let's encrypt for https SSL
 sudo apt install certbot python3-certbot-nginx
 # Then follow the prompts and steps
 ## (Recommended) choose (2) to enable redirecting http to https
@@ -64,6 +71,9 @@ sudo crontab -e
 # Add the below line at the end of the open file (0 分、0 秒、1 日、任何月、任何天（星期幾），也就是不管每個月的一號的 00:00 執行後面的指令)
 ## Add the following: 0 0 1 * * certbot renew
 ```
+If the certbot is executed successfully, you will find inserted lines managed by certbot in the config file at /etc/nginx/sites-enabled.
+
+
 
 
 
