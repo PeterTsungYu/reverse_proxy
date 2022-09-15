@@ -1,0 +1,14 @@
+[Unit]
+Description=Setup a remote tunnel from remote_port to local_port
+After=network.target network-online.target sshd.service
+
+[Service]
+EnvironmentFile=/etc/default/<your env_config file>
+ExecStart=/usr/bin/ssh -i ${PATH_TO_KEY} -o ServerAliveCountMax=20 -o ServerAliveInterval=15 -o ExitOnForwardFailure=yes -NR ${REMOTE_PORT}:${LOCAL_ADDR}:${LOCAL_PORT} ${REMOTE_USER}@${REMOTE_HOST}
+User=<your user_name>
+RestartSec=60
+Restart=on-failure
+#KillMode=mixed 
+
+[Install]
+WantedBy=multi-user.target

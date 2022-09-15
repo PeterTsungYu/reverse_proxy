@@ -1,0 +1,6 @@
+PATH_TO_KEY=<path to your ssh public key file>
+LOCAL_ADDR=localhost
+LOCAL_PORT=<your service port number>
+REMOTE_PORT=<your remote port number>
+REMOTE_USER=<your remote user_name>
+REMOTE_HOST=<your remote domain name>
