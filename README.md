@@ -30,27 +30,40 @@ touch <your config_file_name>
 ```
 
 4. Write into the config file you just created
-Follow the 
+Follow the [sites_available_example](https://github.com/PeterTsungYu/reverse_proxy/blob/main/sites_available_example.txt).
+There are some variable that you should fill in.
+- <your sub.domain.name here>. It is the domain name you would like to use. Ex. service.goggle.comt.
+> No need to prefix with either http or https. Those are part of the configuration.
+- <your page or leave empty as a root page>. It is the name of your service page or your route, which will appear at the end of your url. After setting up, it will be a complete URL as service.goggle.comt/<your page>.
+> Leave it empty if it is gonna be a root webpage.
+- <your designated port number>. It is the port you would like to forward from the server side. It could be one of the available ports on the server side. Ex. 3322, 5333.
 
-# soft link and restart
-$ cd /etc/nginx/sites-enabled
-
-# locate in /etc/nginx/sites-enabled
-$ sudo ln -s ../sites-available/<config_name> .
-$ sudo service nginx restart
-(or) sudo systemctl restart nginx 
-# check status
-$ sudo systemctl status nginx 
-
-# Let's encrypt for https SSL
-$ sudo apt install certbot python3-certbot-nginx
-# choose (2) to enable redirecting http to https
-
-$ sudo certbot --nginx -d rvproxy.fun2go.energy
-
-# auto-renew the SSL via crontab
-$ sudo crontab -e 
-# add below to the final line, 0 分、0 秒、1 日、任何月、任何天（星期幾），也就是不管每個月的一號的 00:00 執行後面的指令
-# 0 0 1 * * certbot renew
+5. After editing the route file, execute
 ```
+# soft link and restart
+cd /etc/nginx/sites-enabled
+sudo ln -s ../sites-available/<your config_file_name> .
+sudo systemctl restart nginx
+
+# check status
+sudo systemctl status nginx 
+```
+
+6. (Optional) Make your service SSL-certified. And, it is for free!
+# Let's encrypt for https SSL
+sudo apt install certbot python3-certbot-nginx
+# Then follow the prompts and steps
+## (Recommended) choose (2) to enable redirecting http to https
+
+# <your sub.domain.name here>. It is the domain name you would like to use. Ex. service.goggle.comt.
+## No need to prefix with either http or https.
+sudo certbot --nginx -d <your sub.domain.name here>
+
+# (Recommended) Auto-renew the SSL via crontab
+sudo crontab -e 
+# Add the below line at the end of the open file (0 分、0 秒、1 日、任何月、任何天（星期幾），也就是不管每個月的一號的 00:00 執行後面的指令)
+## Add the following: 0 0 1 * * certbot renew
+```
+
+
 
