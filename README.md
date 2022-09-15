@@ -75,16 +75,54 @@ If the certbot is executed successfully, you will find inserted lines managed by
 
 ## Install and Execution (the service of running machine side)
 ### Remote ssh tunnel systemd service
-1. Generate a ssh key pair
+1. Generate a ssh key pair in your running machine
+In this project, the RPi 3B+ is used.
 ```
+# in the terminal, enter the command
 ssh-keygen
-cat id_rsa.pub
-# copy the public key, and place into the remote server
 
-# init the ssh connection to store known_host
-ssh <user_name>@<remote_domain/ip>
+# locate the file of the public ssh key  
+## In Rpi, it is at the path of ~/.ssh
+cat id_rsa.pub
+# Then, copy the public key
 ```
 
-2. 
+After acquiring the pub key, place the public key to the server where the key is used as ssh service.
+In this project, the public key is configured through the GCP cloud engine.
+Once the ssh public key is configured, you could make a ssh connection between the server and the machine.
+
+```
+# init the ssh connection to store the known_host
+ssh <user_name in the server>@<server_domain/ip>
+```
+- `<user_name in the server>`. It is the user name used in your server.
+> In this project, the name is called "pi" as the RPi 3B+ is used as the machine.
+- `<server_domain/ip>`. It is the domain name / public IP of the server. It is recommended that the IP should be a static or permanent IP for further usage. 
+> This is a critical step to go through before further configurations. It is going to book the server information into the machine. So that both sides are now known to each other.
+
+> By initializing the ssh connection, the server EDSCA key print will be stored into the known_host file.
+This is the crucial part at first. 
+
+> If the service is gonna connecting to a subdomain.domain name, then user should do the ssh through the same ==subdomain.domain name==
+
+>> Otherwise, the local machine is not gonna make any connection with the unknown host. Then the ssh is gonna be blocked by the remote host, even the PING (ICMP) as well. 
+>> 
+>> To restore from the misconnection, it is better to restart both local and remote machines, and temporarily stop all the connection-wised services. Then, start all over again.
+
+2. Create a service file in the path of /etc/systemd/system (still on the machine side)
+> (not in /lib/systemd/system, which is for downloaded packages) 
+```
+cd /etc/systemd/system
+touch <your service file>
+```
+After creating a blank service file, paste the [the example of the service file](https://github.com/PeterTsungYu/reverse_proxy/blob/main/destination_ssh_remote_example.txt) to `<your service file>`.
+Fill in your variables inside the file.
+- /etc/default/`<your env_config file>`. It is a env variable file that it will be configured in the below instructions.
+> The env variables will populate all the ${sign}'s that are in the line of defining `ExecStart=`. 
+- `<your user_name>`. It is your user name on the machine. It is recommended to have the same name here and there in the server so that it is not confusing.
+> In this project, the name is as "pi" since RPi 3B+ is used.
+
+> try restart every 60s (RestartSec=60)
+max 20 tries (-o ServerAliveCountMax=20) with an interval of 15s
 
 
