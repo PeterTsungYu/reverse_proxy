@@ -113,9 +113,9 @@ This is the crucial part at first.
 > (not in /lib/systemd/system, which is for downloaded packages) 
 ```
 cd /etc/systemd/system
-touch <your service file>
+touch <your service file>.service
 ```
-After creating a blank service file, paste the [the example of the service file](https://github.com/PeterTsungYu/reverse_proxy/blob/main/destination_ssh_remote_example.txt) to `<your service file>`.
+After creating a blank service file, paste the [the example of the service file](https://github.com/PeterTsungYu/reverse_proxy/blob/main/destination_ssh_remote_example.txt) to `<your service file>.service`.
 Fill in your variables inside the file.
 - /etc/default/`<your env_config file>`. It is a env variable file that it will be configured in the below instructions.
 > The env variables will populate all the ${sign}'s that are in the line of defining `ExecStart=`. 
@@ -125,4 +125,35 @@ Fill in your variables inside the file.
 > try restart every 60s (RestartSec=60)
 max 20 tries (-o ServerAliveCountMax=20) with an interval of 15s
 
+3. Create a env_variables file in the path of /etc/default
+```
+cd /etc/default
+touch <your env_variable file>
+```
+After creating a blank file, paste the [the example of the env_variable file](https://github.com/PeterTsungYu/reverse_proxy/blob/main/ssh_remote_env_example.txt) to `<your env_variable file>`.
+Fill in your variables inside the file.
+- `<path to your ssh public key file>`. It is the path of your ssh public key, which is the one you place into the server to be able to establish the ssh connection. See the [previous](https://github.com/PeterTsungYu/reverse_proxy/tree/readme#remote-ssh-tunnel-systemd-service) first step.
+> In this project, the path in RPi 3B+ is at ~/.ssh/id_rsa.pub
+- LOCAL_ADDR=localhost. In this project, the service will be located in the machine itself.
+- `<your service port number>`. It is the port number that your service is running on the machine. It would typically be the port that a service used.
+> Ex. Flask app is running on port 5000.
+- `<your remote port number>`. It is the port number that your server is mapping to. 
+Previously, the above-mentioned step set a port number in the server. It should be the same port number here to map each other.
+So you will have one port number from the server side and one port number from the machine. Those two are mapping to each other.
+See the [previous](https://github.com/PeterTsungYu/reverse_proxy/tree/readme#install-and-execution-the-reverse-proxy-server-side) fourth step. 
+- `<your remote user_name>`. It is the user_name you used in the server. It is recommended to have the same name here and there in the server so that it is not confusing.
+- `<your remote domain name>`. It is the server's domain name / IP. It is recommended that the IP should be a static or permanent IP for further usage.
 
+4. Finally, start the systemctl service. Good luck there!
+```
+# start the service
+sudo systemctl start <your service file>.service
+
+# status
+systemctl status <your service file>.service
+
+# stop 
+sudo systemctl stop <your service file>.service
+```
+If execute successfully, you now can access the service running on your machine by visiting the public URL such as `service.goggle.comt/<your route>`.
+It will be a HTTPS connection, tho.
