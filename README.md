@@ -10,7 +10,7 @@ It manages all the devices, which are a handful of Rasberry Pis in this project,
 One benefit is that you could access those web services via your designated domain names. 
 The other benefit is that even though the service is exposed, the principle of the reverse proxy is to hide all the information of machines behind the proxy.
 
-## Install and Execution
+## Install and Execution (the Reverse Proxy server side)
 1. Setup a DNS to get a domain name for reverse proxy
 A domain name is a premise. One should be able to setup a cloud server or any similar kind with a public domain name. 
 In this project, a cloud server is created in the GCP (Google Cloud Platform), and a domain name is registered in GoDaddy.
@@ -73,7 +73,18 @@ sudo crontab -e
 ```
 If the certbot is executed successfully, you will find inserted lines managed by certbot in the config file at /etc/nginx/sites-enabled.
 
+## Install and Execution (the service of running machine side)
+### Remote ssh tunnel systemd service
+1. Generate a ssh key pair
+```
+ssh-keygen
+cat id_rsa.pub
+# copy the public key, and place into the remote server
 
+# init the ssh connection to store known_host
+ssh <user_name>@<remote_domain/ip>
+```
 
+2. 
 
 
